@@ -1,0 +1,33 @@
+{
+  name : 'choi',
+  age: 30,
+  password : '1234'
+}
+
+> 액션
+
+{
+  type: 'CHANGE_NICKNAME',
+  data: 'yeong'
+}
+
+> 디스패치 > reducer
+
+switch(action.type){
+  case 'CHANGE_NICKNAME':
+  return{ // 항상 다른 객체를 전달한다. 히스토리 관리를 위해
+    ...state, // 메모리를 아끼기 위해서 참조 관리한다.
+    name:action.data
+  }
+}
+
+리덕스의 기본 원리, 
+
+const nest = { b: 'c' };
+const prev = { a: nest };
+const next = { ...prev }
+
+prev.a === next.a 
+true
+prev === next
+false

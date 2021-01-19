@@ -5,17 +5,22 @@ const { Post, Image, Comment, User, Hashtag } = require('../models');
 const { isLoggedIn } = require('./middlewares');
 const router = express.Router();
 const path = require('path');
+const multerS3 = require('multer-s3');
+const AWS = require('aws-sdk');
+const { CodeBuild } = require('aws-sdk');
 
 // 보통은 프론트에서 클라우드로 바로 올린다, 대규모 서비스시
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: 'ap-northeast-2',
+});
 const upload = multer({
-  storage: multer.diskStorage({ // 컴퓨터 하드 디스크에 저장, 나중엔 AWS 배포 시 S3로 변경한다
-    destination(req, file, done) {
-      done(null, 'upload');
-    },
-    filename(req, file, done) { // 확장자이름.jpg .png
-      const ext = path.extname (file.originalname); // 확장자 추출(.png)
-      const basename = path.basename(file.originalname, ext) // 확장자 이름
-      done(null, basename + '_'+ new Date().getTime() + ext); //확장자 이름34341324123.png
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: 'reactsnsimage',
+    key(req, file, cb) {
+      cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`)
     }
   }),
   limits: { fileSize: 20 * 1024 * 1024 }, // 20mb 용량 제한
@@ -263,7 +268,7 @@ router.delete('/:postId', isLoggedIn ,async (req, res, next) => {  // DELETE/pos
 // PostForm input name="image"에 올린게 저장된다 / 여러장: array 한장: single
 router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next) => { //POST /post/images
   console.log(req.files); 
-  res.json(req.files.map((v) => v.filename));
+  res.json(req.files.map((v) => v.location));
 });
 
 module.exports = router;

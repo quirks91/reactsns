@@ -30,15 +30,19 @@ if(process.env.NODE_ENV === 'production') {
   app.use(morgan('combined'));
   app.use(hpp());
   app.use(helmet());
+  app.use(cors({
+    // origin: true,
+    origin: 'http://reactsns.com', //백 > 프론트 / 프론트 > 백
+    credentials: true,
+  }));
 } else {
   app.use(morgan('dev'));
+  app.use(cors({
+    origin: true,
+    credentials: true,
+  }));
 }
 
-app.use(cors({
-  // origin: true,
-  origin: ['http://localhost:3000', 'http://reactsns.com'], //백 > 프론트 / 프론트 > 백
-  credentials: true,
-}));
 app.use('/', express.static(path.join(__dirname,'upload'))); //dirname back폴더, path.join으로 경로를 찾아준다
 app.use(express.json()); // front에서 받은 data를 req.body에 넣어주는 역할을 한다. ( json data )
 app.use(express.urlencoded({ extended: true })); // front에서 받은 data를 req.body에 넣어주는 역할을 한다. ( form data )

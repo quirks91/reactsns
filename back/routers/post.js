@@ -268,7 +268,7 @@ router.delete('/:postId', isLoggedIn ,async (req, res, next) => {  // DELETE/pos
 // PostForm input name="image"에 올린게 저장된다 / 여러장: array 한장: single
 router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next) => { //POST /post/images
   console.log(req.files); 
-  res.json(req.files.map((v) => v.location));
+  res.json(req.files.map((v) => v.location.replace(/\/original\//, '/thumb/')));
 });
 
 module.exports = router;

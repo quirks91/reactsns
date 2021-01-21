@@ -236,7 +236,7 @@ router.patch('/:postId/like', isLoggedIn, async (req, res, next) => { // PATCH /
   }
 });
 
-router.patch('/:postId', isLoggedIn, async (req, res, next) => { // PATCH /post/1/like
+router.patch('/:postId', isLoggedIn, async (req, res, next) => { // PATCH /post/10
   const hashtags = req.body.content.match(/#[^\s#]+/g);
   try {
     await Post.update({
@@ -248,18 +248,18 @@ router.patch('/:postId', isLoggedIn, async (req, res, next) => { // PATCH /post/
       },
     });
     const post = await Post.findOne({ where: { id: req.params.postId }});
-    if (hashtags) { // create 등록, findOrCreate 있으면 가져오고 없으면 등록
-      const result = await Promise.all(hashtags.map((tag) => Hashtag.findOrCreate({ //slice는 #을 빼고 DB에 저장하기 위해서 #리액트 #프로젝트
+    if (hashtags) {
+      const result = await Promise.all(hashtags.map((tag) => Hashtag.findOrCreate({
         where: { name: tag.slice(1).toLowerCase() },
-      }))); // [[#노드, true], [#리액트, true]] 두번째 인자는 생성되었는지
+      }))); // [[노드, true], [리액트, true]]
       await post.setHashtags(result.map((v) => v[0]));
-    } // [[#노드, true], [#리액트, true]] 두번째 인자는 생성되었는지
+    }
     res.status(200).json({ PostId: parseInt(req.params.postId, 10), content: req.body.content });
-  } catch (error){
+  } catch (error) {
     console.error(error);
     next(error);
   }
-})
+});
 
 router.delete('/:postId/like', isLoggedIn, async (req, res, next) => { // DELETE /post/1/like
   try {

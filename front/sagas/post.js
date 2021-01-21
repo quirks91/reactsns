@@ -13,6 +13,7 @@ import {
   LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE,
   LOAD_USER_POSTS_REQUEST, LOAD_USER_POSTS_SUCCESS, LOAD_USER_POSTS_FAILURE,
   LOAD_HASHTAG_POSTS_REQUEST, LOAD_HASHTAG_POSTS_SUCCESS, LOAD_HASHTAG_POSTS_FAILURE,
+  UPDATE_POST_REQUEST, UPDATE_POST_SUCCESS, UPDATE_POST_FAILURE,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
@@ -200,6 +201,25 @@ function* addPost(action) { // 1) 액션에서
   }
 }
 
+function updatePostAPI(data) { // 3) 전달 받아서
+  return axios.patch(`/post/${data.PostId}`, data); // 4) 여기로 온다.
+}
+
+function* updatePost(action) { // 1) 액션에서
+  try {
+    const result = yield call(updatePostAPI, action.data); // 2) 데이터 꺼내서
+    yield put({
+      type: UPDATE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: UPDATE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function removePostAPI(data) { // 3) 전달 받아서
   return axios.delete(`/post/${data}`); // 4) 여기로 온다.
 }
@@ -281,6 +301,10 @@ function* watchLoadPost() {
   yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
+function* watchUpdatePost() {
+  yield takeLatest(UPDATE_POST_REQUEST, updatePost);
+}
+
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
@@ -295,6 +319,7 @@ function* watchAddComment() {
 
 export default function* postSaga() {
   yield all([
+    fork(watchUpdatePost),
     fork(watchRetweet),
     fork(watchUploadImage),
     fork(watchLikePost),

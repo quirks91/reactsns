@@ -14,11 +14,11 @@ const FollowList = ({ header, data, onClickMore, loading}) => {
         type: UNFOLLOW_REQUEST,
         data: id,
       });
-      dispatch({
-        type: REMOVE_FOLLOWER_REQUEST,
-        data: id,
-      });
     }
+    dispatch({
+      type: REMOVE_FOLLOWER_REQUEST,
+      data: id,
+    });
   };
 
   return(

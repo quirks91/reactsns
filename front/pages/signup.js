@@ -3,10 +3,11 @@ import Head from 'next/head'; // next.js 헤드 컴포넌트
 import { END } from 'redux-saga';
 import axios from 'axios';
 
-import { Form, Input, Checkbox, Button } from 'antd';
+import { Form, Input, Checkbox, Button, AutoComplete } from 'antd';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
+import Link from 'next/link';
 import wrapper from '../store/configureStore';
 import useInput from '../hooks/useInput';
 import { SIGN_UP_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user';
@@ -14,6 +15,34 @@ import AppLayout from '../components/AppLayout';
 
 const ErrorMessage = styled.div`
   color: red;
+`;
+
+const StyledTitle = styled.h1`
+  @font-face {
+    font-family: 'BMEULJIRO';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/BMEULJIRO.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  padding: 20px;
+  border-bottom: 1px solid #DBDBDB;
+
+  font-family: 'BMEULJIRO';
+
+`;
+
+const StyledLabel = styled.label`
+  font-weight: bold;
+`;
+
+const StyledInput = styled(Input)`
+  width: 300px;
+  margin-bottom: 10px;
+`;
+
+const StyledButton = styled(Button)`
+  width: 300px;
 `;
 
 const Signup = () => {
@@ -73,43 +102,54 @@ const Signup = () => {
 
   return (
     <>
-      <AppLayout>
+      {/* <AppLayout> */}
         <Head>
           <title>회원가입 / SNS</title>
         </Head>
-        <Form onFinish={onSubmit}>
-          <div>
-            <label htmlFor="user-email">이메일</label> <br />
-            <Input name="user-email" type="email" value={email} required onChange={onChangeEmail} />
-          </div>
-          <div>
-            <label htmlFor="user-nick">닉네임</label> <br />
-            <Input name="user-nick" value={nickname} required onChange={onChangeNickname} />
-          </div>
-          <div>
-            <label htmlFor="user-password">비밀번호</label> <br />
-            <Input name="user-password" type="password" value={password} required onChange={onChangePassword} />
-          </div>
-          <div>
-            <label htmlFor="user-password-check">비밀번호체크</label> <br />
-            <Input
-              name="user-password-check"
-              type="password"
-              value={passwordCheck}
-              required
-              onChange={onChangePasswordCheck}
-            />
-            {passwordError && <ErrorMessage>비밀번호가 일치하지 않습니다.</ErrorMessage>}
-          </div>
-          <div>
-            <Checkbox name="user-term" checked={term} onChange={onChangeTerm}>영훈이 말을 잘 들을 것을 동의하니 해랭아</Checkbox>
-            {termError && <ErrorMessage>약관에 동의하셔야 합니다.</ErrorMessage>}
-          </div>
-          <div style={{ marginTop: 10 }}>
-            <Button type="primary" htmlType="submit" loading={signUpLoading}>가입하기</Button>
-          </div>
-        </Form>
-      </AppLayout>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height:'80vh', width:'100vw' }}>
+          <Form onFinish={onSubmit}>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <StyledTitle>
+                React SNS
+              </StyledTitle>
+              <div>
+                <StyledLabel htmlFor="user-email">이메일</StyledLabel> <br />
+                <StyledInput name="user-email" type="email" value={email} required onChange={onChangeEmail} />
+              </div>
+              <div>
+                <StyledLabel htmlFor="user-nick">닉네임</StyledLabel> <br />
+                <StyledInput name="user-nick" value={nickname} required onChange={onChangeNickname} />
+              </div>
+              <div>
+                <StyledLabel htmlFor="user-password">비밀번호</StyledLabel> <br />
+                <StyledInput name="user-password" type="password" value={password} required onChange={onChangePassword} />
+              </div>
+              <div>
+                <StyledLabel htmlFor="user-password-check">비밀번호체크</StyledLabel> <br />
+                <StyledInput
+                  name="user-password-check"
+                  type="password"
+                  value={passwordCheck}
+                  required
+                  onChange={onChangePasswordCheck}
+                />
+                {passwordError && <ErrorMessage>비밀번호가 일치하지 않습니다.</ErrorMessage>}
+              </div>
+              <div>
+                <Checkbox name="user-term" checked={term} onChange={onChangeTerm}>포트폴리오 사이트 입니다</Checkbox>
+                {termError && <ErrorMessage>약관에 동의하셔야 합니다.</ErrorMessage>}
+              </div>
+              <div style={{ marginTop: 10 }}>
+                <StyledButton type="primary" htmlType="submit" loading={signUpLoading}>가입하기</StyledButton>
+              </div>
+            </div>
+            <br />
+            <div style={{ textAlign: "center" }}>
+              계정이 있으신가요? <Link href="/"><a>로그인</a></Link>
+            </div>
+          </Form>
+        </div>
+      {/* </AppLayout> */}
     </>
   );
 };

@@ -15,9 +15,23 @@ const UserProfile = () => {
   return (
     <Card
       actions={[
-        <div key="twit"><Link href={`/user/${me.id}`}><a>내 게시글<br />{me.Posts.length}</a></Link></div>,
-        <div key="followings"><Link href="/profile"><a>팔로잉 <br />{me.Followings.length}</a></Link></div>,
-        <div key="followings"><Link href="/profile"><a>팔로워 <br />{me.Followers.length}</a></Link></div>,
+        <div key="twit">
+          <Link href={`/user/${me.id}`}>
+            <a>내 게시글<br />{me.Posts.length}</a>
+          </Link>
+        </div>,
+
+        <div key="followings">
+          <Link href="/profile">
+            <a>팔로잉 <br />{me.Followings.length}</a>
+          </Link>
+        </div>,
+
+        <div key="followings">
+          <Link href="/profile">
+            <a>팔로워 <br />{me.Followers.length}</a>
+          </Link>
+        </div>,
       ]}
     >
       <Card.Meta
@@ -25,7 +39,6 @@ const UserProfile = () => {
         title={me.nickname}
       />
       <Button onClick={onLogOut} loading={LogOutLoading}>로그아웃</Button>
-
     </Card>
   );
 };

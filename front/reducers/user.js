@@ -22,6 +22,9 @@ export const initialState = {
   unfollowLoading: false, // 로그인 시도중
   unfollowDone: false, 
   unfollowError: false, 
+  logpasscheckLoading: false, // 패스워드 체크중
+  logpasscheckDone: false, 
+  LogpasscheckError: false, 
   loginLoading: false, // 로그인 시도중
   logInDone: false, 
   LoginError: false, 
@@ -34,6 +37,9 @@ export const initialState = {
   changeNicknameLoading: false, // 닉네임 변경 시도중
   changeNicknameDone: false,
   changeNicknameError: null,
+  changePasswordLoading: false, // 패스워드 변경 시도중
+  changePasswordDone: false, // 패스워드 변경 시도중
+  changePasswordError: null, // 패스워드 변경 시도중
   me: null,
   userInfo: null,
   signUpData: {},
@@ -41,6 +47,14 @@ export const initialState = {
 };
 
 // 문자열을 이용할 시 오타에 취약하기 때문에 변수로 만들어준다.
+export const CHANGE_PASSWORD_REQUEST = 'CHANGE_PASSWORD_REQUEST';
+export const CHANGE_PASSWORD_SUCCESS = 'CHANGE_PASSWORD_SUCCESS';
+export const CHANGE_PASSWORD_FAILURE = 'CHANGE_PASSWORD_FAILURE';
+
+export const LOG_PASSCHECK_REQUEST = 'LOG_PASSCHECK_REQUEST';
+export const LOG_PASSCHECK_SUCCESS = 'LOG_PASSCHECK_SUCCESS';
+export const LOG_PASSCHECK_FAILURE = 'LOG_PASSCHECK_FAILURE';
+
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
 export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
@@ -87,6 +101,13 @@ export const LOAD_FOLLOWINGS_FAILURE = 'LOAD_FOLLOWINGS_FAILURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
+
+export const PasswordCheckAction = ( data ) => {
+  return {
+    type: LOG_PASSCHECK_REQUEST,
+    data,
+  };
+};
 
 export const loginRequestAction = ( data ) => {
   return {
@@ -224,6 +245,21 @@ const reducer = ( state = initialState, action ) => {
         draft.logInError = action.error;
         break;
 
+      case LOG_PASSCHECK_REQUEST:
+        draft.logpasscheckLoading = true;
+        draft.logpasscheckError = null;
+        draft.logpasscheckDone = false;
+        break;
+      case LOG_PASSCHECK_SUCCESS:
+        draft.logpasscheckLoading = false;
+        draft.logpasscheckDone = true;
+        draft.me = action.data;
+        break;
+      case LOG_PASSCHECK_FAILURE:
+        draft.logpasscheckLoading = false;
+        draft.logpasscheckError = action.error;
+        break;
+
       case LOG_OUT_REQUEST:
         draft.LogOutLoading = true;
         draft.logOutDone = false;
@@ -267,6 +303,21 @@ const reducer = ( state = initialState, action ) => {
       case CHANGE_NICKNAME_FAILURE:
         draft.changeNicknameLoading = false;
         draft.changeNicknameError = action.error;
+        break;
+
+      case CHANGE_PASSWORD_REQUEST:
+        draft.changePasswordLoading = true;
+        draft.changePasswordDone = false;
+        draft.changePasswordError = null;
+        break;
+      case CHANGE_PASSWORD_SUCCESS:
+        draft.me.password = action.data.password;
+        draft.changePasswordLoading = false;
+        draft.changePasswordDone = true;
+        break;
+      case CHANGE_PASSWORD_FAILURE:
+        draft.changePasswordLoading = false;
+        draft.changePasswordError = action.error;
         break;
 
       case ADD_POST_TO_ME:

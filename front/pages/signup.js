@@ -144,8 +144,8 @@ const Signup = () => {
               </div>
             </div>
             <br />
-            <div style={{ textAlign: "center" }}>
-              계정이 있으신가요? <Link href="/"><a>로그인</a></Link>
+            <div style={{ textAlign: 'center' }}>
+              계정이 있으신가요? <Link href="/login"><a>로그인</a></Link>
             </div>
           </Form>
         </div>

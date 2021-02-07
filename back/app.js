@@ -36,6 +36,7 @@ if(process.env.NODE_ENV === 'production') {
     credentials: true,
   }));
 } else {
+  console.log("개발모드");
   app.use(morgan('dev'));
   app.use(cors({
     origin: true,

@@ -7,6 +7,7 @@ import { backUrl } from '../config/config';
 
 const PostForm = () => {
   const { imagePaths, addPostDone } = useSelector((state) => state.post);
+  const { nickname } = useSelector((state) => state.user.me);
   const dispatch = useDispatch();
   const [text, onChangeText, setText] = useInput('');
   
@@ -59,11 +60,16 @@ const PostForm = () => {
 
   return (
     <Form style={{ margin: '10px 0 20px' }} encType="multipart/form-data" onFinish={onSubmit}>
-      <Input.TextArea value={text} onChange={onChangeText} maxLength={140} placeholder="어떤 신기한 일이 있었나요?" />
+      <Input.TextArea 
+        value={text} 
+        onChange={onChangeText} 
+        maxLength={140} 
+        placeholder={nickname ? `${nickname}님 무슨 생각을 하고 계신가요?` : '무슨 생각을 하고 계신가요?'}
+      />
       <div>
         <input type="file" name="image" multiple hidden ref={imageInput} onChange={onChangeImages} />
         <Button onClick={onClickImageUpload}>이미지 업로드</Button>
-        <Button type="primary" style={{ float: 'right' }} htmlType="submit">올리기</Button>
+        <Button type="primary" style={{ float: 'right', backgroundColor: '#20c997', borderColor: '20c997' }} htmlType="submit">올리기</Button>
       </div>
       <div>
         {imagePaths.map((v, i) => (

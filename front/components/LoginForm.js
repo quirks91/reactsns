@@ -18,8 +18,9 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const { logInLoading, logInError } = useSelector((state) => state.user);
   const [email, onChangeEmail] = useInput('');
+  
   const [password, onChangePassword] = useInput('');
-
+  
   useEffect(() => {
     if(logInError) {
       alert(logInError);

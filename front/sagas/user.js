@@ -13,6 +13,8 @@ import {
   LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWINGS_SUCCESS, LOAD_FOLLOWINGS_FAILURE, 
   REMOVE_FOLLOWER_REQUEST, REMOVE_FOLLOWER_SUCCESS, REMOVE_FOLLOWER_FAILURE, 
   LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOAD_USER_FAILURE,
+  CHANGE_PASSWORD_REQUEST, CHANGE_PASSWORD_SUCCESS, CHANGE_PASSWORD_FAILURE,
+  LOG_PASSCHECK_REQUEST, LOG_PASSCHECK_SUCCESS, LOG_PASSCHECK_FAILURE,
 } from '../reducers/user';
 
 function changeNicknameAPI(data) {
@@ -29,6 +31,26 @@ function* changeNickname(action) {
   } catch (err) {
     yield put({ // put = dispatch
       type: CHANGE_NICKNAME_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 서버로 패스워드 수정하는 요청
+function changePasswordAPI(data) {
+  return axios.patch('/user/passwordchange', { password: data });
+}
+
+function* changePassword(action) {
+  try {
+    const result = yield call(changePasswordAPI, action.data);
+    yield put({
+      type: CHANGE_PASSWORD_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({ // put = dispatch
+      type: CHANGE_PASSWORD_FAILURE,
       error: err.response.data,
     });
   }
@@ -187,6 +209,27 @@ function* logIn(action) {
   }
 }
 
+function passCheckAPI(data) { // 데이터는 쿠키를 전달
+  console.log('sagas passCheckAPI', data);
+  return axios.post('/user/passcheck', data); // 1)서버로 패스체크하는 요청을 보낸다
+} // saga => router user => local.js => router user check => passport (cookie와 user.id)
+
+function* passCheck(action) {
+  try {
+    const result = yield call(passCheckAPI, action.data);
+    console.log('sagas action.data:', action.data);
+    yield put({
+      type: LOG_PASSCHECK_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({ // put = dispatch
+      type: LOG_PASSCHECK_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function logOutAPI() {
   return axios.post('/user/logout'); // 1)서버로 로그아웃 하는 요청을 보내고
 }
@@ -240,6 +283,10 @@ function* watchChangeNickname() {
   yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
 }
 
+function* watchChangePassword() {
+  yield takeLatest(CHANGE_PASSWORD_REQUEST, changePassword);
+}
+
 function* loadMyInfoFollow() {
   yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
 }
@@ -250,6 +297,10 @@ function* watchFollow() {
 
 function* watchUnFollow() {
   yield takeLatest(UNFOLLOW_REQUEST, unfollow); 
+}
+
+function* watchPassCheck() {
+  yield takeLatest(LOG_PASSCHECK_REQUEST, passCheck);
 }
 
 function* watchLogIn() {
@@ -274,10 +325,12 @@ export default function* userSaga() {
     fork(watchloadMyFollowers),
     fork(watchloadMyFollowings),
     fork(watchChangeNickname),
+    fork(watchChangePassword),
     fork(loadMyInfoFollow),
     fork(watchloadUser),
     fork(watchFollow),
     fork(watchUnFollow),
+    fork(watchPassCheck),
     fork(watchLogIn),
     fork(watchLogOut),
     fork(watchSignUp),

@@ -53,7 +53,7 @@ router.post('/', isNotLoggedIn, async (req, res, next) => { // POST /user/
       const hashedPassword = await bcrypt.hash(req.body.password, 10); // 비밀번호 암호화 단계 10~13 적절
       await User.create({ // db table에 data를 넣어준다. await을 쓰려면 async함수로 만들어줘야 한다.
         email: req.body.email, // await이 없어도 data는 들어가지만 비동기가 되어서 res가 먼저 들어간다. 순서 맞춰주기 위한 작업
-        nickname: req.body.nickname, // sagas user에서 넘긴 data를 req.body에있다.
+        nickname: req.body.nickname, // sagas user에서 넘긴 data가 req.body에있다.
         password: hashedPassword, // req.body를 이용하려면 back app.js에 express.json/expres.urlencoded를 해줘야한다.
       });
       res.status(200).send('ok'); // 200성공, 300리다이렉트, 400클라이언트에러, 500서버에러
@@ -100,12 +100,6 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
     })
   })(req, res, next); //미들웨어 확장 express기법
 }); // POST /user/login
-
-router.post('/logout', isLoggedIn, (req, res) => {
-  req.logout();
-  req.session.destroy();
-  res.send('ok');
-});
 
 router.get('/followers', isLoggedIn, async (req, res, next) =>{ // GET /user/followers
   try {
@@ -237,6 +231,62 @@ router.patch('/nickname', isLoggedIn, async (req, res, next) =>{
   }
 });
 
+// // 응답, 요청, 다음 라우터
+// router.post('/passcheck', isLoggedIn ,async (req, res, next) => {
+//   const pass = req.body.password;
+//   try {
+//     const passchecker = await User.findOne({
+//       where: { email: req.user.email },
+//       // attributes: {
+//       //   exclude: ['password'] //제외
+//       // },
+//       include: [{
+//         model: Post,
+//         attributes: ['id'], 
+//       }, {
+//         model: User,
+//         as: 'Followings',  
+//         attributes: ['id'], 
+//       }, {
+//         model: User, 
+//         as: 'Followers',
+//         attributes: ['id'], 
+//       }]
+//     })
+//     const result = await bcrypt.compare(password, pass);
+//     if(result) {
+//       return res.status(200).json(passchecker);
+//     } else {
+//       return res.status(200).json(pass);
+//       // return res.status(500).send({ error: '비밀번호가 틀렸습니다.'});
+//     }
+//   } catch (error) {
+//     console.log('router passcheck error: ',error);
+//     next(error);
+//   }
+// }); // POST /user/passcheck
+
+router.post('/logout', isLoggedIn, (req, res) => {
+  req.logout();
+  req.session.destroy();
+  res.send('ok');
+});
+
+router.patch('/passwordchange', isLoggedIn, async (req, res, next) =>{
+  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+  try {
+    await User.update({
+      password: hashedPassword,
+    }, {
+      where: { id: req.user.id }, 
+    });
+    res.status(200).json({ password: hashedPassword });
+  } catch (error){
+    console.log(error);
+    next(error);
+  }
+});
+
 router.patch('/:userId/follow', isLoggedIn, async (req, res, next) =>{ // PATCH /user/1/follow
   try {
     const user = await User.findOne({ where: { id: req.params.userId }});
@@ -279,6 +329,4 @@ router.delete('/follower/:userId/', isLoggedIn, async (req, res, next) =>{ // DE
   }
 });
 
-
-
-module.exports = router;
+module.exports = router ;

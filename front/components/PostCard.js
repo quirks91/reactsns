@@ -4,12 +4,12 @@ import { RetweetOutlined, HeartOutlined, MessageOutlined, EllipsisOutlined, Hear
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
 import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST, UPDATE_POST_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
-import moment from 'moment';
 
 moment.locale('ko'); // 기본이 영어라 한글로 바꿔준다
 
@@ -92,25 +92,26 @@ const PostCard = ({ post }) => {
           liked
             ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnLike} />
             : <HeartOutlined onClick={onLike} key="heart" />,
-          <MessageOutlined key="comment" onClick={onToggleComment} />,
+          // <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
             key="more" 
             content={(
               <Button.Group>
                 {id && post.User.id === id && (
-                <>
-                  {!post.RetweetId && <Button onClick={onClickUpdate}>수정</Button>}
-                  <Button type="danger" loading={removePostLoading} onClick={onRemovePost}>삭제</Button>
-                </>
-                )} <Button>신고</Button>
+                  <>
+                    {!post.RetweetId && <Button onClick={onClickUpdate}>수정</Button>}
+                    <Button type="danger" loading={removePostLoading} onClick={onRemovePost}>삭제</Button>
+                  </>
+                )}
               </Button.Group>
         )}>
-            <EllipsisOutlined />
+          <EllipsisOutlined />
           </Popover>,
         ]}
         title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null}
         extra={id && <FollowButton post={post} />}
       >
+        {/* 리트윗 부분 */}
         {post.RetweetId && post.Retweet
           ? (
             <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
@@ -133,7 +134,7 @@ const PostCard = ({ post }) => {
             </>
           )}
       </Card>
-      {commentFormOpened && (
+      {/* 댓글 부분 */}
         <div>
           <CommentForm post={post} />
           <List
@@ -151,7 +152,6 @@ const PostCard = ({ post }) => {
             )}
           />
         </div>
-      )}
     </div>
   );
 };

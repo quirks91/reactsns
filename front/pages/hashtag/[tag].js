@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { END } from 'redux-saga';
@@ -14,12 +14,12 @@ const Hashtag = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { tag } = router.query;
-  const { mainPosts, hasMorePosts, loadHashtagPostsLoading } = useSelector((state) => state.post);
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
 
   useEffect(() => {
     const onScroll = () => {
       if (window.pageYOffset + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
-        if (hasMorePosts && !loadHashtagPostsLoading) {
+        if (hasMorePosts && !loadPostsLoading) {
           dispatch({
             type: LOAD_HASHTAG_POSTS_REQUEST,
             lastId: mainPosts[mainPosts.length - 1] && mainPosts[mainPosts.length - 1].id,
@@ -32,7 +32,7 @@ const Hashtag = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [mainPosts.length, hasMorePosts, tag]);
+  }, [mainPosts.length, hasMorePosts, tag, loadPostsLoading]);
 
   return (
     <AppLayout>
@@ -44,7 +44,6 @@ const Hashtag = () => {
 };
 
 export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
-  console.log(context);
   const cookie = context.req ? context.req.headers.cookie : '';
   console.log(context);
   axios.defaults.headers.Cookie = '';
@@ -60,7 +59,6 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
   });
   context.store.dispatch(END);
   await context.store.sagaTask.toPromise();
-  return { props: {} };
 });
 
 export default Hashtag;

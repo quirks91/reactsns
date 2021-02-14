@@ -1,6 +1,6 @@
 import React, { useState, useCallback }from 'react';
 import { Button, Card, Popover, Avatar, List, Comment } from 'antd';
-import { RetweetOutlined, HeartOutlined, MessageOutlined, EllipsisOutlined, HeartTwoTone } from '@ant-design/icons';
+import { RetweetOutlined, HeartOutlined, EllipsisOutlined, HeartTwoTone } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +16,6 @@ moment.locale('ko'); // 기본이 영어라 한글로 바꿔준다
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const { removePostLoading } = useSelector((state) => state.post);
-  const [commentFormOpened, setCommentFormOpened] = useState(false);
   const id = useSelector((state) => state.user.me?.id );
   const liked = post.Likers.find((v) => v.id === id);
   const [editMode, setEditMode] = useState(false);
@@ -59,10 +58,6 @@ const PostCard = ({ post }) => {
     });
   }, [id]);
 
-  const onToggleComment = useCallback(() => {
-    setCommentFormOpened((prev) => !prev);
-  }, []);
-
   const onRemovePost = useCallback(() => {
     if (!id) {
       return alert('로그인이 필요합니다');
@@ -92,7 +87,6 @@ const PostCard = ({ post }) => {
           liked
             ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnLike} />
             : <HeartOutlined onClick={onLike} key="heart" />,
-          // <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
             key="more" 
             content={(
@@ -105,7 +99,7 @@ const PostCard = ({ post }) => {
                 )}
               </Button.Group>
         )}>
-          <EllipsisOutlined />
+            <EllipsisOutlined />
           </Popover>,
         ]}
         title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null}
@@ -119,7 +113,13 @@ const PostCard = ({ post }) => {
               <Card.Meta
                 avatar={<Link href={`/user/${post.Retweet.User.id}`}><a><Avatar>{post.Retweet.User.nickname[0]}</Avatar></a></Link>}
                 title={post.Retweet.User.nickname}
-                description={<PostCardContent postData={post.Retweet.content} onChangePost={onChangePost} onCancelUpdate={onCancelUpdate} />}
+                description={(
+                  <PostCardContent 
+                    postData={post.Retweet.content} 
+                    onChangePost={onChangePost} 
+                    onCancelUpdate={onCancelUpdate} 
+                  />
+                )}
               />
             </Card>
           )
@@ -129,29 +129,42 @@ const PostCard = ({ post }) => {
               <Card.Meta
                 avatar={<Link href={`/user/${post.User.id}`}><a><Avatar>{post.User.nickname[0]}</Avatar></a></Link>}
                 title={post.User.nickname}
-                description={<PostCardContent editMode={editMode} onCancelUpdate={onCancelUpdate} onChangePost={onChangePost} postData={post.content} />} // editMode는 true면 textarea를 보여주고 false면 기존 게시글을 보여준다
+                description={(
+                  <PostCardContent 
+                    editMode={editMode} 
+                    onCancelUpdate={onCancelUpdate} 
+                    onChangePost={onChangePost} 
+                    postData={post.content}
+                  />
+)}
+                 // editMode는 true면 textarea를 보여주고 false면 기존 게시글을 보여준다
               /> 
             </>
           )}
       </Card>
       {/* 댓글 부분 */}
-        <div>
-          <CommentForm post={post} />
-          <List
-            header={`${post.Comments.length}개의 댓글`}
-            itemLayout="horizontal"
-            dataSource={post.Comments}
-            renderItem={(item) => (
-              <li>
-                <Comment
-                  author={item.User.nickname}
-                  avatar={<Link href={`/user/${item.User.id}`}><a><Avatar>{item.User.nickname[0]}</Avatar></a></Link>}
-                  content={item.content}
-                />
-              </li>
-            )}
-          />
-        </div>
+      <div>
+        <CommentForm post={post} />
+        <List
+          header={post.Comments? `${post.Comments.length}개의 댓글` : '0개의 댓글'}
+          itemLayout="horizontal"
+          dataSource={post.Comments}
+          renderItem={(item) => (
+            <li>
+              <Comment
+                author={item.User.nickname}
+                avatar={(
+                  <Link href={`/user/${item.User.id}`}><a>
+                    <Avatar>
+                      {item.User.nickname[0]}
+                    </Avatar></a></Link>
+                )}
+                content={item.content}
+              />
+            </li>
+          )}
+        />
+      </div>
     </div>
   );
 };

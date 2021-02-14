@@ -50,6 +50,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => { // POST 
         await post.addImages(image);
       }
     }
+    
     const fullPost = await Post.findOne({
       where: { id: post.id },
       include: [{

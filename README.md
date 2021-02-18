@@ -55,3 +55,6 @@
 * Sequelize
 * Mysql
 * AWS
+
+### 기타 퍼블리싱 사이트
+https://wolfhoons.github.io/portfolio20/

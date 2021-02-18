@@ -3,6 +3,17 @@
 > React 기반의 SNS사이트입니다 제작기간은 2개월입니다
 >
 > AWS 프리티어로 운영중이며, 가비아에서 도메인을 구매 후 연결했습니다.
+> 
+> GIF 파일 이후 테스트 계정 정보와 사이트 주소가 있습니다.
+
+## 사이트 접속 및 로그인, 로그아웃
+![1_loginout](https://user-images.githubusercontent.com/70469853/108300712-2c9e8300-71e4-11eb-8bc5-b31ef713b7a5.gif)
+
+## 글쓰기 및 수정, 삭제
+![2_writedel](https://user-images.githubusercontent.com/70469853/108300714-2d371980-71e4-11eb-9d17-6a3214d4ca1c.gif)
+
+## 팔로우, 언팔로우 및 닉네임 수정
+![3_folnick](https://user-images.githubusercontent.com/70469853/108300717-2dcfb000-71e4-11eb-9fd7-57469583ff48.gif)
 
 [http://reactsns.com/](http://reactsns.com/)
 

@@ -1,6 +1,6 @@
 # React SNS
 
-## 프리티어를 닫아서 사이트 접속은 불가합니다.
+## 작업기간은 2개월 가량입니다.
 
 > React 기반의 SNS사이트입니다 제작기간은 2개월입니다
 >
@@ -20,9 +20,9 @@
 [http://reactsns.com/](http://reactsns.com/)
 
 #### 테스트 계정 정보
-* ID : test2@naver.com
-* ID : test10@naver.com
-* PW : 123456
+* ID : test1@gmail.com
+* ID : test2@gmail.com
+* PW : 1234
 
 ### 1. 비회원 기능
 1. 포스트 읽기

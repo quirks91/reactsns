@@ -1,6 +1,9 @@
 # React SNS
 
 ## 작업기간은 2개월 가량입니다.
+1년 전 포트폴리오입니다. 현재는 운영하고 있지 않습니다.
+아래는 최근 작업중인 깃허브 주소입니다.
+https://github.com/wolfhoons/carrot-clone
 
 > React 기반의 SNS사이트입니다 제작기간은 2개월입니다
 >
